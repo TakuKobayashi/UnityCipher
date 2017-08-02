@@ -1,0 +1,49 @@
+# Exclude temp nibs and swap files
+*~.nib
+*.swp
+ 
+# Exclude OS X folder attributes
+.DS_Store
+
+# Unity
+*.unityproj
+*.sln
+*.pidb
+*.pidb.meta
+*.userprefs
+*.csproj
+Temp
+Library
+
+# Exclude the build directory
+build/*
+ 
+# Exclude user-specific XCode 3 and 4 files
+*.mode1
+*.mode1v3
+*.mode2v3
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/default.*
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+
+# Android
+.classpath
+.project
+bin/*
+gen/*
+libs/*
+obj/*
+
+# etc
+tags
+
+LocalCache/
+
+AdjustPostBuildiOSLog.txt
+AdjustPostBuildAndroidLog.txt
+
+current_platform.txt
+Library_iOS
+Library_Android
