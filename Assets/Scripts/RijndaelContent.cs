@@ -12,6 +12,7 @@ public class RijndaelContent : MonoBehaviour
         string planeText = textInput.text;
         string passwordText = passwordInput.text;
         string encrypted = RijndaelEncryption.Encrypt(planeText, passwordText);
+        Debug.Log(encrypted);
         resultText.text = encrypted;
     }
 
@@ -21,5 +22,9 @@ public class RijndaelContent : MonoBehaviour
         string passwordText = passwordInput.text;
         string plane = RijndaelEncryption.Decrypt(encryptedText, passwordText);
         resultText.text = plane;
+    }
+
+    public void PasteToInputText(){
+        textInput.text = resultText.text;
     }
 }

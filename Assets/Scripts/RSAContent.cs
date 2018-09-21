@@ -7,15 +7,17 @@ public class RSAContent : MonoBehaviour
 {
     [SerializeField] private InputField textInput;
     [SerializeField] private InputField sizeInput;
-    [SerializeField] private Text publicKeyText;
-    [SerializeField] private Text privateKeyText;
-    [SerializeField] private Text resultText;
+    [SerializeField] private InputField publicKeyText;
+    [SerializeField] private InputField privateKeyText;
+    [SerializeField] private InputField resultText;
 
     private KeyValuePair<string, string> publicAndPrivateKeyValuePair;
 
     public void GenarateKeyPair()
     {
         publicAndPrivateKeyValuePair = RSAEncryption.GenrateKeyPair(int.Parse(sizeInput.text));
+        Debug.Log(publicAndPrivateKeyValuePair.Key);
+        Debug.Log(publicAndPrivateKeyValuePair.Value);
         publicKeyText.text = publicAndPrivateKeyValuePair.Key;
         privateKeyText.text = publicAndPrivateKeyValuePair.Value;
     }
@@ -26,6 +28,7 @@ public class RSAContent : MonoBehaviour
         }
         string planeText = textInput.text;
         string encrypted = RSAEncryption.Encrypt(planeText, publicAndPrivateKeyValuePair.Key);
+        Debug.Log(encrypted);
         resultText.text = encrypted;
     }
 

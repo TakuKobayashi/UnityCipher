@@ -4,17 +4,30 @@ using UnityEngine;
 
 public class TabController : MonoBehaviour {
 
-	[SerializeField] private GameObject tabButtonField;
-	[SerializeField] private GameObject tabContentField;
-	[SerializeField] private List<GameObject> tabContents;
-   
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    [SerializeField] private TabButton RijndealButton;
+    [SerializeField] private TabButton RSAButton;
+    [SerializeField] private GameObject RijndealContent;
+    [SerializeField] private GameObject RSAContent;
+
+    // Use this for initialization
+    void Start () {
+        RijndealButton.OnSelect = () =>
+        {
+            RijndealButton.interactable = false;
+            RSAButton.interactable = true;
+            RSAContent.gameObject.SetActive(false);
+            RijndealContent.gameObject.SetActive(true);
+        };
+        RSAButton.OnSelect = () =>
+        {
+            RSAButton.interactable = false;
+            RijndealButton.interactable = true;
+            RijndealContent.gameObject.SetActive(false);
+            RSAContent.gameObject.SetActive(true);
+        };
+        RijndealButton.interactable = false;
+        RSAButton.interactable = true;
+        RSAContent.gameObject.SetActive(false);
+        RijndealContent.gameObject.SetActive(true);
+    }
 }
