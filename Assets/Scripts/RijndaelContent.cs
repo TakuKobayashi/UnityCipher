@@ -6,7 +6,7 @@ public class RijndaelContent : MonoBehaviour
 {
     [SerializeField] private InputField textInput;
     [SerializeField] private InputField passwordInput;
-    [SerializeField] private Text resultText;
+    [SerializeField] private InputField resultText;
 
     public void ExecuteEncrypt(){
         string planeText = textInput.text;
@@ -21,6 +21,7 @@ public class RijndaelContent : MonoBehaviour
         string encryptedText = textInput.text;
         string passwordText = passwordInput.text;
         string plane = RijndaelEncryption.Decrypt(encryptedText, passwordText);
+        Debug.Log(plane);
         resultText.text = plane;
     }
 
