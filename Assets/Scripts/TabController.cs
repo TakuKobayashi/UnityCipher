@@ -13,21 +13,19 @@ public class TabController : MonoBehaviour {
     void Start () {
         RijndealButton.OnSelect = () =>
         {
-            RijndealButton.interactable = false;
-            RSAButton.interactable = true;
-            RSAContent.gameObject.SetActive(false);
-            RijndealContent.gameObject.SetActive(true);
+            ChangeTheTab(false);
         };
         RSAButton.OnSelect = () =>
         {
-            RSAButton.interactable = false;
-            RijndealButton.interactable = true;
-            RijndealContent.gameObject.SetActive(false);
-            RSAContent.gameObject.SetActive(true);
+            ChangeTheTab(true);
         };
-        RijndealButton.interactable = false;
-        RSAButton.interactable = true;
-        RSAContent.gameObject.SetActive(false);
-        RijndealContent.gameObject.SetActive(true);
+        ChangeTheTab(false);
+    }
+
+    private void ChangeTheTab(bool isToRSA){
+        RijndealButton.interactable = isToRSA;
+        RSAButton.interactable = !isToRSA;
+        RSAContent.gameObject.SetActive(isToRSA);
+        RijndealContent.gameObject.SetActive(!isToRSA);
     }
 }
