@@ -10,6 +10,7 @@ namespace UnityCipher
     [TestFixture]
     public class RSAEncryptionTest
     {
+        //For RSA encryption to generate public and private key.
         [TestCase(1024)]
         [TestCase(384)]
         public void GenrateKeyPairRegularTest(int keySize)
@@ -24,6 +25,8 @@ namespace UnityCipher
             Assert.DoesNotThrow(() => RSAEncryption.GenrateKeyPair(keySize));
         }
 
+
+        //For RSA encryption to fail to generate public and private key.
         [TestCase(16385)]
         [TestCase(376)]
         [TestCase(1023)]
@@ -37,6 +40,7 @@ namespace UnityCipher
             Assert.AreEqual(exception.Message, "Key size not supported by algorithm.");
         }
 
+        //Test for encrypting strings
         [TestCase(384)]
         public void EncryptStringRegularTest(int keySize)
         {
@@ -46,6 +50,7 @@ namespace UnityCipher
             Assert.AreNotEqual(planeString, encripted);
         }
 
+        //Test for encrypting binary
         [TestCase(392)]
         public void EncryptBinaryRegularTest(int keySize)
         {
@@ -55,6 +60,7 @@ namespace UnityCipher
             Assert.AreNotEqual(planeBinary, encripted);
         }
 
+        //Test for decrypting strings
         [TestCase(400)]
         public void DecryptStringRegularTest(int keySize)
         {
@@ -65,6 +71,7 @@ namespace UnityCipher
             Assert.AreEqual(planeString, decripted);
         }
 
+        //Fail to decrypt strings
         [TestCase(1016)]
         public void DecryptStringIrregularTest(int keySize)
         {
@@ -78,6 +85,7 @@ namespace UnityCipher
             Assert.AreEqual(exception.Message, "PKCS1 decoding error.");
         }
 
+        //Test for decrypting binary
         [TestCase(408)]
         public void DecryptBinaryRegularTest(int keySize)
         {
@@ -88,6 +96,7 @@ namespace UnityCipher
             Assert.AreEqual(planeBinary, decripted);
         }
 
+        //Fail to decrypt binary
         [TestCase(1032)]
         public void DecryptBinaryIrregularTest(int keySize)
         {
