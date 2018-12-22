@@ -6,9 +6,22 @@ using System.Security.Cryptography;
 namespace UnityCipher{
     public class RijndaelEncryption
     {
-        private const int BufferKeySize = 32;
-        private const int BlockSize = 256;
-        private const int KeySize = 256;
+        private static int BufferKeySize = 32;
+        private static int BlockSize = 256;
+        private static int KeySize = 256;
+
+        /// <summary>
+        /// <para>If you want to update the settings, you can update the settings.</para>
+        /// <para>【argument1】buffer key size</para>
+        /// <para>【argument2】block size</para>
+        /// <para>【argument3】key size</para>
+        /// </summary>
+        public static void UpdateEncryptionKeySize(int bufferKeySize = 32, int blockSize = 256, int keySize = 256)
+        {
+            BufferKeySize = bufferKeySize;
+            BlockSize = blockSize;
+            KeySize = keySize;
+        }
 
         /// <summary>
         /// <para>Standard Rijndael(AES) encrypt</para>

@@ -128,6 +128,35 @@ namespace UnityCipher
             Assert.AreEqual(decrypted1, decrypted2);
         }
 
+        //Test for being able to update keysize, and encrypt and decrypt.
+        [TestCase(16, 128, 128)]
+        public void UpdateKeysAndEncrypting(int bufferKeySize, int blockSize, int keySize)
+        {
+            RijndaelEncryption.UpdateEncryptionKeySize(
+                bufferKeySize: bufferKeySize,
+                blockSize: blockSize,
+                keySize: keySize
+            );
+
+            string src = Guid.NewGuid().ToString();
+            string passowrd = Guid.NewGuid().ToString();
+            Assert.AreNotEqual(src, passowrd);
+
+            // Encrypted string will be a string different from the original string
+            string encrypted = RijndaelEncryption.Encrypt(src, passowrd);
+            Assert.AreNotEqual(src, encrypted);
+
+            //When decrypting with the same password as when encrypting the encrypted one, the same as the binary before encryption is obtained
+            string decrypted = RijndaelEncryption.Decrypt(encrypted, passowrd);
+            Assert.AreEqual(src, decrypted);
+
+            RijndaelEncryption.UpdateEncryptionKeySize(
+                bufferKeySize: 32,
+                blockSize: 256,
+                keySize: 256
+            );
+        }
+
         private byte[] GenerateRandomBinary(int bufferSize)
         {
             byte[] binary = new byte[bufferSize];

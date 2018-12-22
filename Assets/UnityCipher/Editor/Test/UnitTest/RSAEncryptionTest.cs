@@ -25,7 +25,6 @@ namespace UnityCipher
             Assert.DoesNotThrow(() => RSAEncryption.GenrateKeyPair(keySize));
         }
 
-
         //For RSA encryption to fail to generate public and private key.
         [TestCase(16385)]
         [TestCase(376)]
