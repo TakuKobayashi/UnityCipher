@@ -6,7 +6,7 @@ namespace UnityCipher
     [TestFixture]
     public class RijndaelEncryptionTest
     {
-        //文字列を暗号、復号するテスト
+        //Test for encrypting and decrypting strings
         [Test]
         public void EncryptDecryptStringTest()
         {
@@ -14,16 +14,16 @@ namespace UnityCipher
             string passowrd = Guid.NewGuid().ToString();
             Assert.AreNotEqual(src, passowrd);
 
-            // 暗号化かけたら元の文字列とは異なる文字列となる
+            // Encrypted string will be a string different from the original string
             string encrypted = RijndaelEncryption.Encrypt(src, passowrd);
             Assert.AreNotEqual(src, encrypted);
 
-            // 暗号化されたものを暗号化した時と同じパスワードで復号すると暗号化する前の文字列と同じものが得られる
+            //When decrypting with the same password as when encrypting the encrypted one, the same as the binary before encryption is obtained
             string decrypted = RijndaelEncryption.Decrypt(encrypted, passowrd);
             Assert.AreEqual(src, decrypted);
         }
 
-        //バイナリを暗号、復号するテスト
+        //Test for encrypting and decrypting binary
         [Test]
         public void EncryptDecryptBinaryTest()
         {
@@ -31,7 +31,7 @@ namespace UnityCipher
             string passowrd = Guid.NewGuid().ToString();
             byte[] encrypted = RijndaelEncryption.Encrypt(binary, passowrd);
             bool isEquals = binary.Length == encrypted.Length;
-            // 暗号化かけたら元のバイナリとは異なるバイナリとなる
+            // Encrypted binary will be a binary different from the original binary
             if (isEquals)
             {
                 for (int i = 0; i < binary.Length; ++i)
@@ -44,8 +44,8 @@ namespace UnityCipher
                 }
             }
             Assert.IsFalse(isEquals);
-
-            // 暗号化されたものを暗号化した時と同じパスワードで復号すると暗号化する前のバイナリと同じものが得られる
+            
+            //When decrypting with the same password as when encrypting the encrypted one, the same as the binary before encryption is obtained
             byte[] decrypted = RijndaelEncryption.Decrypt(encrypted, passowrd);
             Assert.AreEqual(binary.Length, decrypted.Length);
             for (int i = 0; i < binary.Length; ++i)
@@ -54,8 +54,8 @@ namespace UnityCipher
             }
         }
 
-        // AES暗号の特徴をテストする
-        // 同じバイナリ、同じパスワードで暗号化しても暗号文は同じにはならない
+        // Test features of AES encryption
+        // Test for encrypting with the same binary and the same password, but the cryptogram will not be the same
         [Test]
         public void RijndaelEncryptBinaryTest()
         {
@@ -64,7 +64,7 @@ namespace UnityCipher
             byte[] encrypted1 = RijndaelEncryption.Encrypt(binary, passowrd);
             byte[] encrypted2 = RijndaelEncryption.Encrypt(binary, passowrd);
             bool isEquals = encrypted1.Length == encrypted2.Length;
-            // 暗号化かけたら元のバイナリとは異なるバイナリとなる
+            // Encrypted binary will be a binary different from the original binary
             if (isEquals)
             {
                 for (int i = 0; i < encrypted1.Length; ++i)
@@ -79,8 +79,8 @@ namespace UnityCipher
             Assert.IsFalse(isEquals);
         }
 
-        // AES暗号の特徴をテストする
-        // 同じバイナリ、同じパスワードで暗号化しても暗号文は同じにはならない
+        // Test features of AES encryption
+        // Test for encrypting with the same string and the same password, but the cryptogram will not be the same
         [Test]
         public void RijndaelEncryptStringTest()
         {
@@ -93,8 +93,8 @@ namespace UnityCipher
             Assert.AreNotEqual(encrypted1, encrypted2);
         }
 
-        // AES暗号の特徴をテストする
-        // 同じバイナリ、同じパスワードで暗号化した異なる暗号文をそれぞれ復号すると同じバイナリになる
+        // Test features of AES encryption
+        // When decrypting different cryptogram encrypted with the same binary and the same password respectively, it becomes the same binary.
         [Test]
         public void RijndaelDecryptBinaryTest()
         {
@@ -112,8 +112,8 @@ namespace UnityCipher
             }
         }
 
-        // AES暗号の特徴をテストする
-        // 同じ文字列、同じパスワードで暗号化した異なる暗号文をそれぞれ復号すると同じ文字列になる
+        // Test features of AES encryption
+        // When decrypting different cryptogram encrypted with the same binary and the same password respectively, it becomes the same string.
         [Test]
         public void RijndaelDecryptStringTest()
         {
