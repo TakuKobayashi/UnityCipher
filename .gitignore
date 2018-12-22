@@ -70,3 +70,9 @@ AdjustPostBuildAndroidLog.txt
 current_platform.txt
 Library_iOS
 Library_Android
+
+# Log
+*.log
+
+# PackageManager
+Packages/manifest.json
