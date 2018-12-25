@@ -24,7 +24,7 @@ If you use ```byte[]```, give the encritpted ```byte[]```, like this.
 byte[] encrypted = RijndaelEncryption.Encrypt(planeBinary, passwordText);
 ```
 
-### Decription
+### Decryption
 You can decrypt it by calling the following method.
 
 ```C#
