@@ -16,5 +16,5 @@ jobs:
     - uses: pCYSl5EDgo/setup-unity@master
       with:
         unity-version: ${{ matrix.unity-version }}
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
+    - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -createManualActivationFile || exit 0
+    - run: cat Unity_v${{ matrix.unity-version }}.alf
