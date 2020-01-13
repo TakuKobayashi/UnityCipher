@@ -13,8 +13,6 @@ using System.Reflection;
 public class UnityPackageExporter
 {
     public static void ExportUnityPackageRoutine(
-        string exportDllPath,
-        string dllBuildIncludeRootPath,
         string buildIncludeRootPath,
         string exportFilePath
     )
@@ -46,5 +44,12 @@ public class UnityPackageExporter
             }
         }
         return seachedFilePathes;
+    }
+
+    public static string FileRootPath(string filePath)
+    {
+        string[] pathCells = filePath.Split("/".ToCharArray());
+        pathCells[pathCells.Length - 1] = "";
+        return string.Join("/", pathCells);
     }
 }
