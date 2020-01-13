@@ -12,6 +12,11 @@ using System.Reflection;
 
 public class UnityPackageExporter
 {
+    public static void ExportUnityPackageFromCommand()
+    {
+        ExportUnityPackageRoutine("Assets/UnityCipher", "UnityCipher.unitypackage");
+    }
+
     public static void ExportUnityPackageRoutine(
         string buildIncludeRootPath,
         string exportFilePath
