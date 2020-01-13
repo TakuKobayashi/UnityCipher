@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 public class UnityPackageExporterWindow : EditorWindow
 {
-    private string exportUnityPackageFilePath = "Assets/UnityCipher.unitypackage";
-    private string buildIncludeRootPath = "Assets/UnityCipher";
+    private string buildIncludeRootPath = UnityPackageExporter.DefaultBuildIncludeRootPath;
+    private string exportUnityPackageFilePath = UnityPackageExporter.DefaultExportUnityPackageFilePath;
 
     [MenuItem("Tools/ExportUnityPackage")]
     static void Open()
