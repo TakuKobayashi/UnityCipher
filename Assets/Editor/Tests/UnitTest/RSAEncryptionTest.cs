@@ -36,7 +36,7 @@ namespace UnityCipher
 
             CryptographicException exception = Assert.Throws<CryptographicException>(() => RSAEncryption.GenrateKeyPair(keySize));
             Assert.IsNotNull(exception);
-            Assert.AreEqual(exception.Message, "Key size not supported by algorithm.");
+            Assert.AreEqual(exception.Message, "Specified key is not a valid size for this algorithm.");
         }
 
         //Test for encrypting strings
@@ -78,10 +78,9 @@ namespace UnityCipher
             string planeString = Guid.NewGuid().ToString();
             string encripted = RSAEncryption.Encrypt(planeString, publicPrivateKeypair1.Key);
             KeyValuePair<string, string> publicPrivateKeypair2 = RSAEncryption.GenrateKeyPair(keySize);
-
-            CryptographicException exception = Assert.Throws<CryptographicException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair2.Value));
+            CryptographicException exception = Assert.Throws<CryptographicUnexpectedOperationException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair2.Value));
             Assert.IsNotNull(exception);
-            Assert.AreEqual(exception.Message, "PKCS1 decoding error.");
+            Assert.AreEqual(exception.Message, "Error occurred while decoding PKCS1 padding.");
         }
 
         //Test for decrypting binary
@@ -103,9 +102,9 @@ namespace UnityCipher
             byte[] planeBinary = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
             byte[] encripted = RSAEncryption.Encrypt(planeBinary, publicPrivateKeypair1.Key);
             KeyValuePair<string, string> publicPrivateKeypair2 = RSAEncryption.GenrateKeyPair(keySize);
-            CryptographicException exception = Assert.Throws<CryptographicException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair2.Value));
+            CryptographicException exception = Assert.Throws<CryptographicUnexpectedOperationException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair2.Value));
             Assert.IsNotNull(exception);
-            Assert.AreEqual(exception.Message, "PKCS1 decoding error.");
+            Assert.AreEqual(exception.Message, "Error occurred while decoding PKCS1 padding.");
         }
     }
 }
