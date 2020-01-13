@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Setup Unity Editor for use with actions
-      - uses: pCYSl5EDgo/setup-unity@master
+        uses: pCYSl5EDgo/setup-unity@master
         with:
           unity-version: ${{ matrix.unity-version }}
       - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -createManualActivationFile
