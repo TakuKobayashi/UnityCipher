@@ -11,11 +11,11 @@ jobs:
         unity-version: [2019.2.17f1]
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup Unity Editor for use with actions
-    - uses: pCYSl5EDgo/setup-unity@master
-      with:
-        unity-version: ${{ matrix.unity-version }}
-    - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -createManualActivationFile
-    - run: cat Unity_v${{ matrix.unity-version }}.alf
-    - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -executeMethod UnityPackageExporter.ExportUnityPackageFromCommand
+      - uses: actions/checkout@v1
+      - name: Setup Unity Editor for use with actions
+      - uses: pCYSl5EDgo/setup-unity@master
+        with:
+          unity-version: ${{ matrix.unity-version }}
+      - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -createManualActivationFile
+      - run: cat Unity_v${{ matrix.unity-version }}.alf
+      - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -executeMethod UnityPackageExporter.ExportUnityPackageFromCommand
