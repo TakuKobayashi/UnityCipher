@@ -16,5 +16,6 @@ jobs:
     - uses: pCYSl5EDgo/setup-unity@master
       with:
         unity-version: ${{ matrix.unity-version }}
-    - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -createManualActivationFile || exit 0
+    - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -createManualActivationFile
     - run: cat Unity_v${{ matrix.unity-version }}.alf
+    - run: /opt/Unity/Editor/Unity -quit -batchMode -logFile -noGraphics -executeMethod UnityPackageExporter.ExportUnityPackageFromCommand
