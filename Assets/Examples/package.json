@@ -1,6 +1,6 @@
 {
-  "name": "net.taptappun.taku.kobayashi.unitycipher",
-  "displayName": "UnityCipher",
+  "name": "net.taptappun.taku.kobayashi.unitycipher.examples",
+  "displayName": "UnityCipherExamples",
   "version": "1.3.0",
   "unity": "2019.4",
   "description": "This is Cipher Libraries in Unity, include the AESCipher and RSACipher.",
@@ -14,6 +14,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/TakuKobayashi/UnityCipher/issues"
+  },
+  "dependencies": {
+    "net.taptappun.taku.kobayashi.unitycipher": "1.3.0"
   },
   "homepage": "https://github.com/TakuKobayashi/UnityCipher#readme"
 }
