@@ -2,7 +2,7 @@
   "name": "net.taptappun.taku.kobayashi.unitycipher",
   "displayName": "UnityCipher",
   "version": "1.2.0",
-  "unity": "2018.1",
+  "unity": "2019.4",
   "description": "This is Cipher Libraries in Unity, include the AESCipher and RSACipher.",
   "keywords": ["Cipher", "Encrypt", "Crypto", "RSA", "AES"],
   "category": "Cipher",
