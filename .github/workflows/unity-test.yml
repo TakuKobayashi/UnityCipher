@@ -22,4 +22,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: BuildResult
-          path: build/
+          path: build
