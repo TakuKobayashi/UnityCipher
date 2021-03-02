@@ -22,5 +22,5 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v2
         with:
-          name: Test results
+          name: TestResults
           path: ${{ steps.unitytest.outputs.artifactsPath }}
