@@ -13,13 +13,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           lfs: true
-      - uses: game-ci/unity-test-runner@v2
+      - uses: game-ci/unity-builder@v2
         id: unitytest
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          testMode: editmode
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          targetPlatform: WebGL
       - uses: actions/upload-artifact@v2
         with:
           name: TestResults
