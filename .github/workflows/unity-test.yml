@@ -21,5 +21,5 @@ jobs:
           targetPlatform: WebGL
       - uses: actions/upload-artifact@v2
         with:
-          name: TestResults
-          path: ${{ steps.unitytest.outputs.artifactsPath }}
+          name: BuildResult
+          path: build/
