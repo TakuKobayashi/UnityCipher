@@ -19,6 +19,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           testMode: editmode
+          unityVersion: 2019.4.14f1
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           customParameters: -enableCodeCoverage
       - uses: actions/upload-artifact@v2
