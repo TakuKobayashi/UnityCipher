@@ -3,6 +3,9 @@ name: Unity Test
 on:
   push:
 
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
 jobs:
   build:
     name: Build project
@@ -15,8 +18,6 @@ jobs:
           lfs: true
       - uses: game-ci/unity-test-runner@v2
         id: unitytest
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           testMode: editmode
           githubToken: ${{ secrets.GITHUB_TOKEN }}
