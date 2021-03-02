@@ -3,9 +3,6 @@ name: Unity Build
 on:
   push:
 
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-
 jobs:
   build:
     name: Build project
@@ -18,6 +15,8 @@ jobs:
           lfs: true
       - uses: game-ci/unity-builder@v2
         id: unitytest
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: WebGL
       - uses: actions/upload-artifact@v2
