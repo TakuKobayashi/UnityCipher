@@ -73,3 +73,8 @@ Library_Android
 
 # Log
 *.log
+
+# PackageManager
+Packages/
+!Packages/manifest.json
+!Packages/packages-lock.json
