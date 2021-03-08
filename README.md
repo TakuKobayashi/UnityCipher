@@ -19,7 +19,7 @@ UnityCipher can be implemented AES encryption(Exactly, Rijndael cipher, not AES 
 }
 ```
 
-or `Add package from git URL` in `Window` -> `PackageManager` like this.
+or input the url `https://github.com/TakuKobayashi/UnityCipher.git?path=/Assets/UnityCipher` to `Add package from git URL` (`Window` -> `PackageManager` like this.)
 
 ![windowbar](images/windowbar.png)
 
