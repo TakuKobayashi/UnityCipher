@@ -3,7 +3,31 @@ This is Cipher Libraries in Unity, include the AESCipher and RSACipher.
 
 # What is UnityCipher?
 UnityCipher can be implemented AES encryption(Exactly, Rijndael cipher, not AES cryptography) and RSA encryption simply and high secure, in Unity(C#).
-If you want to download a unitypackage, you can download from [Releases](https://github.com/TakuKobayashi/UnityCipher/releases).
+
+# Install
+
+* If you want to download a unitypackage, you can download from [Releases](https://github.com/TakuKobayashi/UnityCipher/releases).
+
+* If you want use the UPM, you add below to `Packages/manifest.json`.
+
+```Packages/manifest.json
+{
+  "dependencies": {
+    "net.taptappun.taku.kobayashi.unitycipher": "https://github.com/TakuKobayashi/UnityCipher.git?path=/Assets/UnityCipher",
+    ...
+  }
+}
+```
+
+or `Add package from git URL` in `Window` -> `PackageManager` like this.
+
+![windowbar](images/windowbar.png)
+
+![packageManager](images/packageManager.png)
+
+![packageFromGitURL](images/packageFromGitURL.png)
+
+![giturl](images/giturl.png)
 
 # Usage
 For detail, look to ```UnityCipher/Examples/```
