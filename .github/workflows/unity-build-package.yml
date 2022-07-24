@@ -69,7 +69,7 @@ jobs:
         with:
           buildName: UnityCipher.unitypackage
           targetPlatform: StandaloneLinux64
-          buildMethod: UnityPackageExporter.ExportUnityPackage(buildIncludeRootDirPath: 'Assets/UnityCipher/', exportFilePath: 'UnityCipher.unitypackage')
+          buildMethod: "UnityPackageExporter.ExportUnityPackage(buildIncludeRootDirPath: 'Assets/UnityCipher/', exportFilePath: 'UnityCipher.unitypackage')"
           projectPath: ${{ matrix.root-project-path }}
           allowDirtyBuild: true
           versioning: None
