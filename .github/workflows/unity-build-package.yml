@@ -2,7 +2,7 @@ name: execute-unity-build-package
 on: [push]
 jobs:
   build:
-    name: ${{ matrix.targetPlatform }}
+    name: build unity package
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
