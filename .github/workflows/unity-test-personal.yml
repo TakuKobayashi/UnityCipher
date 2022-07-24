@@ -1,0 +1,83 @@
+name: execute-unity-test
+on: [push]
+jobs:
+  test:
+    name: ${{ matrix.testMode }}-unitytest
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        unity-editor-version: [2021.3.4f1]
+        unity-license-version: [2021.x]
+        node-version: [14.x]
+        root-project-path: [.]
+        testMode:
+          # 実行するテストのモード
+          - editmode
+    steps:
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Cache
+      - uses: actions/cache@v3
+        id: cache-unity-library
+        with:
+          key: ${{ runner.os }}-Unity-Library-${{ matrix.targetPlatform }}
+          path: |
+            ${{ matrix.root-project-path }}/Library
+          restore-keys: |
+            ${{ runner.os }}-Unity-Library-
+
+      # Cache
+      - uses: actions/cache@v3
+        id: cache-unity-license
+        with:
+          key: ${{ runner.os }}-Unity-License-${{ matrix.unity-license-version }}
+          path: |
+            ${{ matrix.root-project-path }}/Unity_v${{ matrix.unity-license-version }}.ulf
+            ${{ matrix.root-project-path }}/Unity_v${{ matrix.unity-editor-version }}.alf
+
+      # Request Unity Activation File
+      - name: Request manual activation file
+        id: getManualLicenseFile
+        uses: game-ci/unity-request-activation-file@v2
+        with:
+          unityVersion: ${{ matrix.unity-editor-version }}
+
+      # Activate from alf File
+      - name: Install node package, `unity-activate`
+        run: npm install -g unity-activate
+      - name: Activate The License
+        id: activateLicense
+        run: unity-activate -u "${{ secrets.UNITY_EMAIL }}" -p "${{ secrets.UNITY_PASSWORD }}" -k "${{ secrets.UNITY_AUTHENTICATOR_KEY }}" -o ${{ matrix.root-project-path }}/ "${{ steps.getManualLicenseFile.outputs.filePath }}"
+      - name: Read ulf
+        id: ulfRead
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ${{ matrix.root-project-path }}/Unity_v${{ matrix.unity-license-version }}.ulf
+
+      # Test
+      - uses: game-ci/unity-test-runner@v2
+        env:
+          UNITY_LICENSE: ${{ steps.ulfRead.outputs.content }}
+        id: tests
+        with:
+          projectPath: ${{ matrix.root-project-path }}
+          allowDirtyBuild: true
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: ${{ matrix.testMode }}-artifacts
+
+      # Upload Test Result
+      - name: Upload Test Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: Test-Results
+          path: ${{ matrix.testMode }}-artifacts
