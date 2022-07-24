@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Security.Cryptography;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace UnityCipher
 {
@@ -77,10 +78,10 @@ namespace UnityCipher
             KeyValuePair<string, string> publicPrivateKeypair1 = RSAEncryption.GenrateKeyPair(keySize);
             string planeString = Guid.NewGuid().ToString();
             string encripted = RSAEncryption.Encrypt(planeString, publicPrivateKeypair1.Key);
-            KeyValuePair<string, string> publicPrivateKeypair2 = RSAEncryption.GenrateKeyPair(keySize);
-            CryptographicException exception = Assert.Throws<CryptographicUnexpectedOperationException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair2.Value));
+            // try to decrypt public key
+            CryptographicException exception = Assert.Throws<CryptographicException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair1.Key));
             Assert.IsNotNull(exception);
-            Assert.AreEqual(exception.Message, "Error occurred while decoding PKCS1 padding.");
+            Assert.AreEqual(exception.Message, "Missing private key to decrypt value.");
         }
 
         //Test for decrypting binary
@@ -101,10 +102,10 @@ namespace UnityCipher
             KeyValuePair<string, string> publicPrivateKeypair1 = RSAEncryption.GenrateKeyPair(keySize);
             byte[] planeBinary = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
             byte[] encripted = RSAEncryption.Encrypt(planeBinary, publicPrivateKeypair1.Key);
-            KeyValuePair<string, string> publicPrivateKeypair2 = RSAEncryption.GenrateKeyPair(keySize);
-            CryptographicException exception = Assert.Throws<CryptographicUnexpectedOperationException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair2.Value));
+            // try to decrypt public key
+            CryptographicException exception = Assert.Throws<CryptographicException>(() => RSAEncryption.Decrypt(encripted, publicPrivateKeypair1.Key));
             Assert.IsNotNull(exception);
-            Assert.AreEqual(exception.Message, "Error occurred while decoding PKCS1 padding.");
+            Assert.AreEqual(exception.Message, "Missing private key to decrypt value.");
         }
     }
 }
