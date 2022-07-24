@@ -78,3 +78,5 @@ Library_Android
 Packages/
 !Packages/manifest.json
 !Packages/packages-lock.json
+
+.vsconfig
