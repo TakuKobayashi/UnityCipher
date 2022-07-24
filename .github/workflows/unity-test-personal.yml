@@ -12,7 +12,6 @@ jobs:
         node-version: [14.x]
         root-project-path: [.]
         testMode:
-          # 実行するテストのモード
           - editmode
     steps:
       - name: Set up Node.js ${{ matrix.node-version }}
@@ -68,10 +67,8 @@ jobs:
       - uses: game-ci/unity-test-runner@v2
         env:
           UNITY_LICENSE: ${{ steps.ulfRead.outputs.content }}
-        id: tests
         with:
           projectPath: ${{ matrix.root-project-path }}
-          allowDirtyBuild: true
           testMode: ${{ matrix.testMode }}
           artifactsPath: ${{ matrix.testMode }}-artifacts
 
