@@ -1,0 +1,82 @@
+name: execute-unity-build-package
+on: [push]
+jobs:
+  build:
+    name: ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        unity-editor-version: [2021.3.4f1]
+        unity-license-version: [2021.x]
+        node-version: [14.x]
+        root-project-path: [.]
+    steps:
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Cache
+      - uses: actions/cache@v3
+        id: cache-unity-library
+        with:
+          key: ${{ runner.os }}-Unity-Library-${{ matrix.unity-license-version }}
+          path: |
+            ${{ matrix.root-project-path }}/Library
+          restore-keys: |
+            ${{ runner.os }}-Unity-Library-
+
+      # Cache
+      - uses: actions/cache@v3
+        id: cache-unity-license
+        with:
+          key: ${{ runner.os }}-Unity-License-${{ matrix.unity-license-version }}
+          path: |
+            ${{ matrix.root-project-path }}/Unity_v${{ matrix.unity-license-version }}.ulf
+            ${{ matrix.root-project-path }}/Unity_v${{ matrix.unity-editor-version }}.alf
+
+      # Request Unity Activation File
+      - name: Request manual activation file
+        id: getManualLicenseFile
+        uses: game-ci/unity-request-activation-file@v2
+        with:
+          unityVersion: ${{ matrix.unity-editor-version }}
+
+      # Activate from alf File
+      - name: Install node package, `unity-activate`
+        run: npm install -g unity-activate
+      - name: Activate The License
+        id: activateLicense
+        run: unity-activate -u "${{ secrets.UNITY_EMAIL }}" -p "${{ secrets.UNITY_PASSWORD }}" -k "${{ secrets.UNITY_AUTHENTICATOR_KEY }}" -o ${{ matrix.root-project-path }}/ "${{ steps.getManualLicenseFile.outputs.filePath }}"
+      - name: Read ulf
+        id: ulfRead
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ${{ matrix.root-project-path }}/Unity_v${{ matrix.unity-license-version }}.ulf
+
+      # Build
+      - name: Build package
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ steps.ulfRead.outputs.content }}
+        with:
+          buildName: UnityCipher.unitypackage
+          targetPlatform: StandaloneLinux64
+          buildMethod: UnityPackageExporter.ExportUnityPackage(buildIncludeRootDirPath: "Assets/UnityCipher/", exportFilePath: "UnityCipher.unitypackage")
+          projectPath: ${{ matrix.root-project-path }}
+          allowDirtyBuild: true
+          versioning: None
+
+      # Upload Build
+      - name: Upload Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build-Results
+          path: UnityCipher.unitypackage
