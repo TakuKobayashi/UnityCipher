@@ -30,7 +30,7 @@ jobs:
       - uses: actions/cache@v3
         id: cache-unity-library
         with:
-          key: ${{ runner.os }}-Unity-Library-${{ matrix.targetPlatform }}
+          key: ${{ runner.os }}-Unity-Library-${{ matrix.unity-license-version }}
           path: |
             ${{ matrix.root-project-path }}/Library
           restore-keys: |
