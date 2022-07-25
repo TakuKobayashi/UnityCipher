@@ -1,3 +1,5 @@
+[![Unity Test](https://github.com/TakuKobayashi/UnityCipher/actions/workflows/unity-test.yml/badge.svg)](https://github.com/TakuKobayashi/UnityCipher/actions/workflows/unity-test.yml)
+
 # UnityCipher
 
 This is Cipher Libraries in Unity, include the AESCipher and RSACipher.
@@ -37,6 +39,7 @@ For detail, look to ```UnityCipher/Examples/```
 And also, add ```using UnityCipher```, you can use UnityCipher.
 
 ## Use AES encryption
+
 ### Encryption
 
 You can encrypt it by calling the following method.
