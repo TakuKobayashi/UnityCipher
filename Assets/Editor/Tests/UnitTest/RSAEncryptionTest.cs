@@ -1,10 +1,8 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Security.Cryptography;
 using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace UnityCipher
 {

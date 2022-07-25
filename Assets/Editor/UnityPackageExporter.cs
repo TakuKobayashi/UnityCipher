@@ -1,14 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Linq;
-using UnityEngine;
 using UnityEditor;
-using UnityEditor.Compilation;
 using System.Diagnostics;
-using System.Reflection;
 
 public class UnityPackageExporter
 {
