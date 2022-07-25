@@ -38,6 +38,12 @@ public class UnityPackageExporter
         AssetDatabase.ExportPackage(buildIncludeRootPathes, exportFilePath, ExportPackageOptions.Recurse);
     }
 
+    public static void ExportUnityPackage(string buildIncludeRootDirPath, string exportFilePath)
+    {
+        List<string> buildPathes = UnityPackageExporter.FindFilePathes(buildIncludeRootDirPath);
+        AssetDatabase.ExportPackage(buildPathes.ToArray(), exportFilePath, ExportPackageOptions.Recurse);
+    }
+
     public static List<string> FindFilePathes(string filterName, string extFileName = "")
     {
         List<string> seachedFilePathes = new List<string>();

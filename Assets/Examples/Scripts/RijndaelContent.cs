@@ -9,9 +9,9 @@ public class RijndaelContent : MonoBehaviour
     [SerializeField] private InputField resultText;
 
     public void ExecuteEncrypt(){
-        string planeText = textInput.text;
+        string plainText = textInput.text;
         string passwordText = passwordInput.text;
-        string encrypted = RijndaelEncryption.Encrypt(planeText, passwordText);
+        string encrypted = RijndaelEncryption.Encrypt(plainText, passwordText);
         Debug.Log(encrypted);
         resultText.text = encrypted;
     }
@@ -20,9 +20,9 @@ public class RijndaelContent : MonoBehaviour
     {
         string encryptedText = textInput.text;
         string passwordText = passwordInput.text;
-        string plane = RijndaelEncryption.Decrypt(encryptedText, passwordText);
-        Debug.Log(plane);
-        resultText.text = plane;
+        string plain = RijndaelEncryption.Decrypt(encryptedText, passwordText);
+        Debug.Log(plain);
+        resultText.text = plain;
     }
 
     public void PasteToInputText(){

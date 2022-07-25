@@ -25,19 +25,19 @@ namespace UnityCipher{
 
         /// <summary>
         /// <para>Standard Rijndael(AES) encrypt</para>
-        /// <para>【argument1】plane text</para>
+        /// <para>【argument1】plain text</para>
         /// <para>【argument2】password</para>
         /// <para>【return】Encrypted and converted to Base64 string</para>
         /// </summary>
-        public static string Encrypt(string plane, string password)
+        public static string Encrypt(string plain, string password)
         {
-            byte[] encrypted = Encrypt(Encoding.UTF8.GetBytes(plane), password);
+            byte[] encrypted = Encrypt(Encoding.UTF8.GetBytes(plain), password);
             return Convert.ToBase64String(encrypted);
         }
 
         /// <summary>
         /// <para>Standard Rijndael(AES) encrypt</para>
-        /// <para>【argument1】plane binary</para>
+        /// <para>【argument1】plain binary</para>
         /// <para>【argument2】password</para>
         /// <para>【return】Encrypted binary</para>
         /// </summary>

@@ -33,8 +33,8 @@ public class RSAContent : MonoBehaviour
         if(string.IsNullOrEmpty(publicKeyText.text)){
             return;
         }
-        string planeText = textInput.text;
-        string encrypted = RSAEncryption.Encrypt(planeText, publicAndPrivateKeyValuePair.Key);
+        string plainText = textInput.text;
+        string encrypted = RSAEncryption.Encrypt(plainText, publicAndPrivateKeyValuePair.Key);
         Debug.Log(encrypted);
         resultText.text = encrypted;
     }
@@ -46,9 +46,9 @@ public class RSAContent : MonoBehaviour
             return;
         }
         string encryptedText = textInput.text;
-        string plane = RSAEncryption.Decrypt(encryptedText, publicAndPrivateKeyValuePair.Value);
-        Debug.Log(plane);
-        resultText.text = plane;
+        string plain = RSAEncryption.Decrypt(encryptedText, publicAndPrivateKeyValuePair.Value);
+        Debug.Log(plain);
+        resultText.text = plain;
     }
 
     public void PasteToInputText()
