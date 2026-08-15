@@ -1,0 +1,102 @@
+name: execute-unity-test
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: ${{ matrix.testMode }}-unitytest
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        unity-editor-version: [6000.0.60f1]
+        unity-license-client-version: [6.x]
+        node-version: [24.x]
+        root-project-path: [.]
+        testMode:
+          - editmode
+
+    steps:
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Unity account secrets
+        shell: bash
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          for variable in UNITY_EMAIL UNITY_PASSWORD; do
+            if [ -z "${!variable}" ]; then
+              echo "Required Actions secret is missing: $variable" >&2
+              exit 1
+            fi
+          done
+
+      - name: Set up Unity ${{ matrix.unity-editor-version }}
+        id: unity-setup
+        uses: RageAgainstThePixel/unity-setup@v2.6.0
+        with:
+          version-file: ${{ matrix.root-project-path }}/ProjectSettings/ProjectVersion.txt
+          unity-version: ${{ matrix.unity-editor-version }}
+          cache-installation: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        id: cache-unity-library
+        with:
+          key: ${{ runner.os }}-Unity-Library-${{ matrix.unity-editor-version }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          path: ${{ matrix.root-project-path }}/Library
+          restore-keys: |
+            ${{ runner.os }}-Unity-Library-${{ matrix.unity-editor-version }}-
+            ${{ runner.os }}-Unity-Library-
+
+      - name: Activate Unity Personal license
+        uses: buildalon/activate-unity-license@v2.2.2
+        with:
+          license: personal
+          username: ${{ secrets.UNITY_EMAIL }}
+          password: ${{ secrets.UNITY_PASSWORD }}
+          license-version: ${{ matrix.unity-license-client-version }}
+
+      - name: Run Unity tests
+        id: tests
+        shell: bash
+        run: |
+          artifacts_path="${{ matrix.testMode }}-artifacts"
+          mkdir -p "$artifacts_path"
+          echo "artifacts-path=$artifacts_path" >> "$GITHUB_OUTPUT"
+
+          "$UNITY_EDITOR_PATH" \
+            -batchmode \
+            -nographics \
+            -projectPath "${{ matrix.root-project-path }}" \
+            -runTests \
+            -testPlatform "${{ matrix.testMode }}" \
+            -testResults "$artifacts_path/test-results.xml" \
+            -logFile "$artifacts_path/unity.log"
+
+      - name: Print Unity log after failure
+        if: failure()
+        shell: bash
+        run: cat "${{ steps.tests.outputs.artifacts-path }}/unity.log"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.testMode }}-test-results
+          path: ${{ steps.tests.outputs.artifacts-path }}
+          if-no-files-found: warn
