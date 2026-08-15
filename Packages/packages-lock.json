@@ -126,13 +126,6 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
-    "net.taptappun.taku.kobayashi.unitydotenv": {
-      "version": "https://github.com/TakuKobayashi/UnityDotenv.git?path=/Unity/Assets/UnityDotenv",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "13fea8df41aad516c780ba8d1eac939b838ca491"
-    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
