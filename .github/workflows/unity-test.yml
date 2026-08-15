@@ -15,6 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         unity-editor-version: [6000.0.60f1]
+        unity-hub-version: [3.19.5]
         unity-license-client-version: [6.x]
         node-version: [24.x]
         root-project-path: [.]
@@ -51,6 +52,7 @@ jobs:
         with:
           version-file: ${{ matrix.root-project-path }}/ProjectSettings/ProjectVersion.txt
           unity-version: ${{ matrix.unity-editor-version }}
+          hub-version: ${{ matrix.unity-hub-version }}
           cache-installation: true
 
       - name: Cache Unity Library
