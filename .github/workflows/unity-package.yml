@@ -1,0 +1,138 @@
+name: build-unity-package
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-unity-package:
+    name: Build Unity package
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read and validate package version
+        id: package
+        shell: bash
+        run: |
+          package_version="$(jq -r '.version' Assets/UnityCipher/package.json)"
+          if [[ -z "$package_version" || "$package_version" == "null" ]]; then
+            echo "Assets/UnityCipher/package.json does not contain a version." >&2
+            exit 1
+          fi
+
+          if [[ "$GITHUB_REF" == refs/tags/v* && "${GITHUB_REF_NAME#v}" != "$package_version" ]]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version $package_version." >&2
+            exit 1
+          fi
+
+          echo "version=$package_version" >> "$GITHUB_OUTPUT"
+          echo "file-name=UnityCipher-$package_version.unitypackage" >> "$GITHUB_OUTPUT"
+
+      - name: Validate Unity account secrets
+        shell: bash
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          for variable in UNITY_EMAIL UNITY_PASSWORD; do
+            if [[ -z "${!variable}" ]]; then
+              echo "Required Actions secret is missing: $variable" >&2
+              exit 1
+            fi
+          done
+
+      - name: Set up Unity
+        uses: RageAgainstThePixel/unity-setup@v2.6.0
+        with:
+          version-file: ProjectSettings/ProjectVersion.txt
+          unity-version: 6000.0.60f1
+          hub-version: 3.19.5
+          cache-installation: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-Unity-Library-package-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          path: Library
+          restore-keys: |
+            ${{ runner.os }}-Unity-Library-package-
+            ${{ runner.os }}-Unity-Library-
+
+      - name: Activate Unity Personal license
+        uses: buildalon/activate-unity-license@v2.2.2
+        with:
+          license: personal
+          username: ${{ secrets.UNITY_EMAIL }}
+          password: ${{ secrets.UNITY_PASSWORD }}
+          license-version: 6.x
+
+      - name: Export unitypackage
+        shell: bash
+        env:
+          UNITY_PACKAGE_OUTPUT_PATH: ${{ github.workspace }}/artifacts/${{ steps.package.outputs.file-name }}
+        run: |
+          mkdir -p artifacts
+          "$UNITY_EDITOR_PATH" \
+            -batchmode \
+            -nographics \
+            -quit \
+            -projectPath . \
+            -executeMethod UnityPackageExporter.ExportUnityPackageFromCommand \
+            -logFile artifacts/unity-package-export.log
+
+      - name: Print Unity log after failure
+        if: failure()
+        shell: bash
+        run: test ! -f artifacts/unity-package-export.log || cat artifacts/unity-package-export.log
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UnityCipher-${{ steps.package.outputs.version }}
+          path: artifacts/${{ steps.package.outputs.file-name }}
+          if-no-files-found: error
+
+  attach-to-release:
+    name: Attach package to GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build-unity-package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download workflow artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: UnityCipher-${{ needs.build-unity-package.outputs.version }}
+          path: artifacts
+
+      - name: Attach package to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          package_file="artifacts/UnityCipher-${GITHUB_REF_NAME#v}.unitypackage"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" \
+              "$package_file" \
+              --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              "$package_file" \
+              --title "$GITHUB_REF_NAME" \
+              --generate-notes
+          fi

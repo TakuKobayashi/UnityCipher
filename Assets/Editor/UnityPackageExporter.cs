@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using System.Diagnostics;
@@ -10,7 +12,42 @@ public class UnityPackageExporter
 
     public static void ExportUnityPackageFromCommand()
     {
-        ExportUnityPackageRoutine(DefaultBuildIncludeRootPath, DefaultExportUnityPackageFilePath);
+        string exportFilePath = Environment.GetEnvironmentVariable("UNITY_PACKAGE_OUTPUT_PATH");
+        if (string.IsNullOrEmpty(exportFilePath))
+        {
+            exportFilePath = DefaultExportUnityPackageFilePath;
+        }
+
+        if (!AssetDatabase.IsValidFolder(DefaultBuildIncludeRootPath))
+        {
+            throw new DirectoryNotFoundException(
+                "Unity package source directory was not found: " + DefaultBuildIncludeRootPath
+            );
+        }
+
+        string absoluteExportFilePath = Path.GetFullPath(exportFilePath);
+        string exportDirectory = Path.GetDirectoryName(absoluteExportFilePath);
+        if (!string.IsNullOrEmpty(exportDirectory))
+        {
+            Directory.CreateDirectory(exportDirectory);
+        }
+
+        // Export only the installable library. Examples, tests, and this editor
+        // tooling live outside Assets/UnityCipher and are intentionally excluded.
+        AssetDatabase.ExportPackage(
+            DefaultBuildIncludeRootPath,
+            absoluteExportFilePath,
+            ExportPackageOptions.Recurse
+        );
+
+        if (!File.Exists(absoluteExportFilePath))
+        {
+            throw new InvalidOperationException(
+                "Unity did not create the expected package: " + absoluteExportFilePath
+            );
+        }
+
+        UnityEngine.Debug.Log("Exported Unity package: " + absoluteExportFilePath);
     }
 
     public static void ExportUnityPackageRoutine(
