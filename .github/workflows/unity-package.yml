@@ -79,6 +79,36 @@ jobs:
           password: ${{ secrets.UNITY_PASSWORD }}
           license-version: 6.x
 
+      - name: Run release tests
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: release-tests
+        shell: bash
+        run: |
+          mkdir -p release-test-artifacts
+          echo "artifacts-path=release-test-artifacts" >> "$GITHUB_OUTPUT"
+
+          "$UNITY_EDITOR_PATH" \
+            -batchmode \
+            -nographics \
+            -projectPath . \
+            -runTests \
+            -testPlatform editmode \
+            -testResults release-test-artifacts/test-results.xml \
+            -logFile release-test-artifacts/unity.log
+
+      - name: Print release test log after failure
+        if: failure() && startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: test ! -f release-test-artifacts/unity.log || cat release-test-artifacts/unity.log
+
+      - name: Upload release test results
+        if: always() && startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v7
+        with:
+          name: UnityCipher-${{ steps.package.outputs.version }}-test-results
+          path: release-test-artifacts
+          if-no-files-found: warn
+
       - name: Export unitypackage
         shell: bash
         env:
@@ -105,34 +135,60 @@ jobs:
           path: artifacts/${{ steps.package.outputs.file-name }}
           if-no-files-found: error
 
-  attach-to-release:
-    name: Attach package to GitHub Release
+  release:
+    name: Publish GitHub Release
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build-unity-package
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write
 
     steps:
+      - name: Checkout release source and tag history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Download workflow artifact
         uses: actions/download-artifact@v8
         with:
           name: UnityCipher-${{ needs.build-unity-package.outputs.version }}
           path: artifacts
 
-      - name: Attach package to GitHub Release
+      - name: Generate English release notes
+        uses: ./.github/actions/ai-release-notes
+        with:
+          github-token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+          language: en
+          bilingual: "false"
+          dry-run: "true"
+          output-file: release-notes.md
+
+      - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           package_file="artifacts/UnityCipher-${GITHUB_REF_NAME#v}.unitypackage"
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" \
+              --title "$GITHUB_REF_NAME" \
+              --notes-file release-notes.md
             gh release upload "$GITHUB_REF_NAME" \
               "$package_file" \
               --clobber
           else
-            gh release create "$GITHUB_REF_NAME" \
-              "$package_file" \
-              --title "$GITHUB_REF_NAME" \
-              --generate-notes
+            release_options=(
+              "$GITHUB_REF_NAME"
+              "$package_file"
+              --title "$GITHUB_REF_NAME"
+              --notes-file release-notes.md
+              --verify-tag
+            )
+            if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+              release_options+=(--prerelease)
+            fi
+            gh release create "${release_options[@]}"
           fi
