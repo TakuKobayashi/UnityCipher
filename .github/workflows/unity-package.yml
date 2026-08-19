@@ -16,7 +16,7 @@ jobs:
   build-unity-package:
     name: Build Unity package
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     outputs:
       version: ${{ steps.package.outputs.version }}
     steps:
