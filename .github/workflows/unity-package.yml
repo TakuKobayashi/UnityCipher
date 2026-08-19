@@ -21,7 +21,7 @@ jobs:
       version: ${{ steps.package.outputs.version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Read and validate package version
         id: package
@@ -63,7 +63,7 @@ jobs:
           cache-installation: true
 
       - name: Cache Unity Library
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           key: ${{ runner.os }}-Unity-Library-package-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           path: Library
@@ -99,7 +99,7 @@ jobs:
         run: test ! -f artifacts/unity-package-export.log || cat artifacts/unity-package-export.log
 
       - name: Upload workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: UnityCipher-${{ steps.package.outputs.version }}
           path: artifacts/${{ steps.package.outputs.file-name }}
@@ -115,7 +115,7 @@ jobs:
 
     steps:
       - name: Download workflow artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: UnityCipher-${{ needs.build-unity-package.outputs.version }}
           path: artifacts
